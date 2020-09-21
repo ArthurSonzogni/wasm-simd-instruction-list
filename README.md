@@ -5,11 +5,10 @@ from: https://github.com/WebAssembly/simd/blob/master/proposals/simd/SIMD.md
 
 ### Glossary:
 * `v128` is a new WebAssembly type. It correspond to a vector register in the CPU.
-* `ImmLaneIdx{2,4,8,16}` are immediate operand of the instruction. They
-   represent an index (encoded in the instruction). Their encoding naturally
-   limit maximum value they can reach, or at least, they must be validated before
-   executing the program.
-*  ImmLaneIdx32[16]
+* `ImmByte[16]` is an immediate operand of the instruction, it contains 128
+   arbitrary bits of data.
+* `ImmLaneIdx{2,4,8,16}` are immediate operand of the instruction. They are stored as
+  a byte, but their value are validated before executing the program.
 * `memarg` is (offset, align). It represents the linear memory at address
   `mem[baseAddr + memarg.offset]`. A trap is triggered whenever an access is
   made outside of the allocated linear memory.
