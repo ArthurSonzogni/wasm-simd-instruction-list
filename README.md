@@ -7,7 +7,9 @@ from: https://github.com/WebAssembly/simd/blob/master/proposals/simd/SIMD.md
 * `v128` is a new WebAssembly type. It correspond to a vector register in the CPU.
 * `ImmLaneIdx{2,4,8,16}` are immediate operand of the instruction. They
    represent an index (encoded in the instruction). Their encoding naturally
-   limit maximum value they can readh.
+   limit maximum value they can reach, or at least, they must be validated before
+   executing the program.
+*  ImmLaneIdx32[16]
 * `memarg` is (offset, align). It represents the linear memory at address
   `mem[baseAddr + memarg.offset]`. A trap is triggered whenever an access is
   made outside of the allocated linear memory.
@@ -30,52 +32,8 @@ There are currently 190 new instructions + one new type `v128`
 * `v128.load8x8_s`
 * `v128.load8x8_u`
 
-### (a: v128) → i32
-* `i16x8.all_true`
-* `i16x8.any_true`
-* `i16x8.bitmask`
-* `i32x4.all_true`
-* `i32x4.any_true`
-* `i32x4.bitmask`
-* `i8x16.all_true`
-* `i8x16.any_true`
-* `i8x16.bitmask`
-
-### (a: v128) → v128
-* `f32x4.abs`
-* `f32x4.ceil`
-* `f32x4.convert_i32x4_s`
-* `f32x4.convert_i32x4_u`
-* `f32x4.floor`
-* `f32x4.nearest`
-* `f32x4.neg`
-* `f32x4.sqrt`
-* `f32x4.trunc`
-* `f64x2.abs`
-* `f64x2.ceil`
-* `f64x2.floor`
-* `f64x2.nearest`
-* `f64x2.neg`
-* `f64x2.sqrt`
-* `f64x2.trunc`
-* `i16x8.abs`
-* `i16x8.neg`
-* `i16x8.widen_high_i8x16_s`
-* `i16x8.widen_high_i8x16_u`
-* `i16x8.widen_low_i8x16_s`
-* `i16x8.widen_low_i8x16_u`
-* `i32x4.abs`
-* `i32x4.neg`
-* `i32x4.trunc_sat_f32x4_s`
-* `i32x4.trunc_sat_f32x4_u`
-* `i32x4.widen_high_i16x8_s`
-* `i32x4.widen_high_i16x8_u`
-* `i32x4.widen_low_i16x8_s`
-* `i32x4.widen_low_i16x8_u`
-* `i64x2.neg`
-* `i8x16.abs`
-* `i8x16.neg`
-* `v128.not`
+### (imm: ImmByte[16]) → v128
+* `v128.const`
 
 ### (a: v128, b: v128) → v128
 * `f32x4.add`
@@ -178,41 +136,41 @@ There are currently 190 new instructions + one new type `v128`
 * `v128.or`
 * `v128.xor`
 
-### (a: v128, b: v128, imm: ImmLaneIdx32[16]) → v128
-* `i8x16.shuffle`
-
-### (a: v128, imm: ImmLaneIdx16) → i32
-* `i8x16.extract_lane_s`
-* `i8x16.extract_lane_u`
-
-### (a: v128, imm: ImmLaneIdx16, x: i32) → v128
-* `i8x16.replace_lane`
-
-### (a: v128, imm: ImmLaneIdx2) → f64
-* `f64x2.extract_lane`
-* `i64x2.extract_lane`
-
-### (a: v128, imm: ImmLaneIdx2, x: f64) → v128
-* `f64x2.replace_lane`
-* `i64x2.replace_lane`
-
-### (a: v128, imm: ImmLaneIdx4) → f32
-* `f32x4.extract_lane`
-* `i32x4.extract_lane`
-
-### (a: v128, imm: ImmLaneIdx4, x: f32) → v128
-* `f32x4.replace_lane`
-* `i32x4.replace_lane`
-
-### (a: v128, imm: ImmLaneIdx8) → i32
-* `i16x8.extract_lane_s`
-* `i16x8.extract_lane_u`
-
-### (a: v128, imm: ImmLaneIdx8, x: i32) → v128
-* `i16x8.replace_lane`
-
-### (a: v128, s: v128) → v128
-* `i8x16.swizzle`
+### (a: v128) → v128
+* `f32x4.abs`
+* `f32x4.ceil`
+* `f32x4.convert_i32x4_s`
+* `f32x4.convert_i32x4_u`
+* `f32x4.floor`
+* `f32x4.nearest`
+* `f32x4.neg`
+* `f32x4.sqrt`
+* `f32x4.trunc`
+* `f64x2.abs`
+* `f64x2.ceil`
+* `f64x2.floor`
+* `f64x2.nearest`
+* `f64x2.neg`
+* `f64x2.sqrt`
+* `f64x2.trunc`
+* `i16x8.abs`
+* `i16x8.neg`
+* `i16x8.widen_high_i8x16_s`
+* `i16x8.widen_high_i8x16_u`
+* `i16x8.widen_low_i8x16_s`
+* `i16x8.widen_low_i8x16_u`
+* `i32x4.abs`
+* `i32x4.neg`
+* `i32x4.trunc_sat_f32x4_s`
+* `i32x4.trunc_sat_f32x4_u`
+* `i32x4.widen_high_i16x8_s`
+* `i32x4.widen_high_i16x8_u`
+* `i32x4.widen_low_i16x8_s`
+* `i32x4.widen_low_i16x8_u`
+* `i64x2.neg`
+* `i8x16.abs`
+* `i8x16.neg`
+* `v128.not`
 
 ### (a: v128, y: i32) → v128
 * `i16x8.shl`
@@ -228,11 +186,46 @@ There are currently 190 new instructions + one new type `v128`
 * `i8x16.shr_s`
 * `i8x16.shr_u`
 
-### (imm: ImmByte[16]) → v128
-* `v128.const`
+### (a: v128) → i32
+* `i16x8.all_true`
+* `i16x8.any_true`
+* `i16x8.bitmask`
+* `i32x4.all_true`
+* `i32x4.any_true`
+* `i32x4.bitmask`
+* `i8x16.all_true`
+* `i8x16.any_true`
+* `i8x16.bitmask`
 
-### (v1: v128, v2: v128, c: v128) → v128
-* `v128.bitselect`
+### (a: v128, imm: ImmLaneIdx16) → i32
+* `i8x16.extract_lane_s`
+* `i8x16.extract_lane_u`
+
+### (a: v128, imm: ImmLaneIdx4) → f32
+* `f32x4.extract_lane`
+* `i32x4.extract_lane`
+
+### (a: v128, imm: ImmLaneIdx8) → i32
+* `i16x8.extract_lane_s`
+* `i16x8.extract_lane_u`
+
+### (a: v128, imm: ImmLaneIdx2) → f64
+* `f64x2.extract_lane`
+* `i64x2.extract_lane`
+
+### (a: v128, imm: ImmLaneIdx16, x: i32) → v128
+* `i8x16.replace_lane`
+
+### (a: v128, imm: ImmLaneIdx2, x: f64) → v128
+* `f64x2.replace_lane`
+* `i64x2.replace_lane`
+
+### (a: v128, imm: ImmLaneIdx4, x: f32) → v128
+* `f32x4.replace_lane`
+* `i32x4.replace_lane`
+
+### (a: v128, imm: ImmLaneIdx8, x: i32) → v128
+* `i16x8.replace_lane`
 
 ### (x: f32) → v128
 * `f32x4.splat`
@@ -247,3 +240,12 @@ There are currently 190 new instructions + one new type `v128`
 
 ### (x: i64) → v128
 * `i64x2.splat`
+
+### (v1: v128, v2: v128, c: v128) → v128
+* `v128.bitselect`
+
+### (a: v128, s: v128) → v128
+* `i8x16.swizzle`
+
+### (a: v128, b: v128, imm: ImmLaneIdx32[16]) → v128
+* `i8x16.shuffle`
