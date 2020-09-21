@@ -20,16 +20,16 @@ There are currently 190 new instructions + one new type `v128`
 
 ### (memarg) → v128
 * `v128.load`
-* `v128.load16_splat`
-* `v128.load16x4_s`
-* `v128.load16x4_u`
-* `v128.load32_splat`
-* `v128.load32x2_s`
-* `v128.load32x2_u`
 * `v128.load64_splat`
-* `v128.load8_splat`
-* `v128.load8x8_s`
+* `v128.load32x2_u`
+* `v128.load32x2_s`
+* `v128.load32_splat`
+* `v128.load16x4_u`
+* `v128.load16x4_s`
+* `v128.load16_splat`
 * `v128.load8x8_u`
+* `v128.load8x8_s`
+* `v128.load8_splat`
 
 ### (imm: ImmByte[16]) → v128
 * `v128.const`
